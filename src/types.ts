@@ -17,6 +17,7 @@ export interface CertificateData {
   city: string;
   state: string;
   pincode: string;
+  verificationId: string;
 }
 
 export const initialData: CertificateData = {
@@ -35,5 +36,6 @@ export const initialData: CertificateData = {
   stationName: 'Hebbagodi PS',
   city: 'Bengaluru City',
   state: 'Karnataka',
-  pincode: '560078'
+  pincode: '560078',
+  verificationId: 'VERIFIED-X7K9P2M4L'
 };

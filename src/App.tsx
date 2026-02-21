@@ -29,16 +29,17 @@ function App() {
     try {
       addToast('info', 'Generating PDF...');
       
-      // Wait a bit for any re-renders
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Wait a bit for any re-renders and image loading
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const canvas = await html2canvas(hiddenCertificateRef.current, {
         scale: 2,
         useCORS: true,
-        logging: false,
+        logging: true,
         backgroundColor: '#ffffff',
-        // allowTaint must be false to use toDataURL
-        allowTaint: false, 
+        allowTaint: false,
+        windowWidth: 210 * 3.7795275591, // A4 width in pixels (approx)
+        windowHeight: 297 * 3.7795275591 // A4 height in pixels (approx)
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -57,9 +58,40 @@ function App() {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-    addToast('success', 'Print dialog opened');
+  const handlePrint = async () => {
+    if (!hiddenCertificateRef.current) return;
+
+    try {
+      addToast('info', 'Preparing for print...');
+      
+      // Wait a bit for any re-renders
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const canvas = await html2canvas(hiddenCertificateRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        allowTaint: false,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      
+      // Open PDF in new tab
+      const pdfBlob = pdf.output('bloburl');
+      window.open(pdfBlob, '_blank');
+      
+      addToast('success', 'Print dialog opened');
+    } catch (error) {
+      console.error('Error printing:', error);
+      addToast('error', 'Failed to print. Please try again.');
+    }
   };
 
   const handleCopyQR = async () => {
@@ -68,7 +100,7 @@ function App() {
         appNo: data.applicationNumber,
         name: data.applicantName,
         date: data.reportDate,
-        id: "VERIFIED-" + Math.random().toString(36).substr(2, 9).toUpperCase()
+        id: data.verificationId
       });
       await navigator.clipboard.writeText(qrData);
       addToast('success', 'QR Data copied to clipboard!');

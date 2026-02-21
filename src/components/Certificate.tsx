@@ -4,9 +4,10 @@ import { CertificateData } from '../types';
 
 interface CertificateProps {
   data: CertificateData;
+  className?: string;
 }
 
-export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data }, ref) => {
+export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data, className }, ref) => {
   // Karnataka Police Logo URL (using a placeholder that looks official or a generic one if specific not found)
   // I will use a generic shield or try to find the specific one. 
   // For now, let's use a placeholder that we can replace or a generic emblem.
@@ -16,11 +17,11 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data 
     appNo: data.applicationNumber,
     name: data.applicantName,
     date: data.reportDate,
-    id: "VERIFIED-" + Math.random().toString(36).substr(2, 9).toUpperCase()
+    id: data.verificationId
   });
 
   return (
-    <div ref={ref} id="certificate-preview" className="w-[210mm] min-h-[297mm] bg-white p-8 mx-auto relative text-black font-sans box-border">
+    <div ref={ref} className={`w-[210mm] min-h-[297mm] bg-white p-8 mx-auto relative text-black font-sans box-border certificate-content ${className || ''}`}>
       {/* Outer Border */}
       <div className="h-full w-full border-4 border-gray-600 p-1 relative flex flex-col justify-between">
         <div className="h-full w-full border border-gray-400 p-6 flex flex-col relative">
