@@ -233,13 +233,28 @@ function App() {
                 </div>
                 
                 {/* Preview Container - Scaled down to fit */}
-                <div className="overflow-hidden rounded-lg bg-white relative group">
-                  <div className="origin-top-left transform scale-[0.45] sm:scale-[0.55] md:scale-[0.6] lg:scale-[0.5] xl:scale-[0.6] h-[297mm] w-[210mm]">
-                    <Certificate ref={certificateRef} data={data} />
+                <div className="overflow-hidden rounded-lg bg-white relative group flex justify-center bg-gray-100/50 border border-gray-200">
+                  <div 
+                    style={{ 
+                      width: 'calc(210mm * var(--cert-scale))', 
+                      height: 'calc(297mm * var(--cert-scale))',
+                      position: 'relative'
+                    }}
+                  >
+                    <div 
+                      className="origin-top-left absolute top-0 left-0"
+                      style={{ 
+                        transform: 'scale(var(--cert-scale))',
+                        width: '210mm',
+                        height: '297mm'
+                      }}
+                    >
+                      <Certificate ref={certificateRef} data={data} />
+                    </div>
                   </div>
                   
                   {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-20">
                     <p className="text-white font-medium flex items-center gap-2">
                       <Shield className="w-5 h-5" />
                       Official Document Preview

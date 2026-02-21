@@ -26,6 +26,41 @@
   .btn-secondary {
     @apply px-6 py-2 bg-white text-gov-navy border border-gov-navy rounded-lg hover:bg-gray-50 transition-colors duration-200 shadow-sm flex items-center gap-2 justify-center;
   }
+
+  /* Responsive Certificate Scale */
+  :root {
+    --cert-scale: 0.33;
+  }
+
+  @media (min-width: 400px) {
+    :root {
+      --cert-scale: 0.4;
+    }
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --cert-scale: 0.55;
+    }
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --cert-scale: 0.6;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --cert-scale: 0.45;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    :root {
+      --cert-scale: 0.6;
+    }
+  }
 }
 
 /* Print styles to ensure the certificate looks right when printing/generating PDF */
