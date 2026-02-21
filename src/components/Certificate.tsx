@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
+import { Shield } from 'lucide-react';
 import { CertificateData } from '../types';
 
 interface CertificateProps {
@@ -8,6 +9,8 @@ interface CertificateProps {
 }
 
 export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data, className }, ref) => {
+  const [imgError, setImgError] = useState(false);
+
   // Karnataka Police Logo URL (using a placeholder that looks official or a generic one if specific not found)
   // I will use a generic shield or try to find the specific one. 
   // For now, let's use a placeholder that we can replace or a generic emblem.
@@ -33,19 +36,20 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
             <div className="flex flex-col items-center justify-center w-1/2">
                {/* Logo Placeholder - In a real app, use the actual asset */}
                <div className="w-20 h-20 mb-2 relative flex items-center justify-center">
-                  <img 
-                    src="https://i.postimg.cc/9MfTRTD5/kar-main-logo.png" 
-                    alt="Karnataka State Police" 
-                    className="w-full h-full object-contain"
-                    crossOrigin="anonymous"
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement?.classList.add('bg-gray-200', 'rounded-full');
-                      // Add a fallback icon via DOM manipulation or just let the alt text show? 
-                      // Better to just hide it and show a text fallback or nothing.
-                    }}
-                  />
+                  {!imgError ? (
+                    <img 
+                      src="https://i.postimg.cc/9MfTRTD5/kar-main-logo.png" 
+                      alt="Karnataka State Police" 
+                      className="w-full h-full object-contain"
+                      crossOrigin="anonymous"
+                      referrerPolicy="no-referrer"
+                      onError={() => setImgError(true)}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center">
+                      <Shield className="w-14 h-14 text-gray-800" />
+                    </div>
+                  )}
                </div>
                <h1 className="text-lg font-bold text-center leading-tight">Government of Karnataka<br/>(Police Department)</h1>
             </div>

@@ -90,7 +90,8 @@ function App() {
       addToast('success', 'Print dialog opened');
     } catch (error) {
       console.error('Error printing:', error);
-      addToast('error', 'Failed to print. Please try again.');
+      addToast('error', 'PDF generation failed. Falling back to browser print.');
+      window.print();
     }
   };
 
@@ -115,8 +116,8 @@ function App() {
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       
       {/* Hidden Certificate for PDF Generation - Full Scale */}
-      {/* We use fixed positioning off-screen instead of display:none or h-0/w-0 because html2canvas needs the element to be rendered with dimensions */}
-      <div className="fixed left-[-9999px] top-0 w-[210mm] h-[297mm] bg-white">
+      {/* We use absolute positioning with z-index -50 to keep it in the DOM but hidden, which is better for html2canvas than off-screen fixed */}
+      <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none w-[210mm] h-[297mm] bg-white">
         <Certificate ref={hiddenCertificateRef} data={data} />
       </div>
 
