@@ -4,22 +4,40 @@ import { Shield, CheckCircle, FileCheck, Lock } from 'lucide-react';
 import { CertificateForm } from './components/CertificateForm';
 import { Certificate } from './components/Certificate';
 import { initialData, CertificateData } from './types';
+import { ToastContainer, ToastMessage, ToastType } from './components/Toast';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 function App() {
   const [data, setData] = useState<CertificateData>(initialData);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const certificateRef = useRef<HTMLDivElement>(null);
+  const hiddenCertificateRef = useRef<HTMLDivElement>(null);
+
+  const addToast = (type: ToastType, message: string) => {
+    const id = Math.random().toString(36).substr(2, 9);
+    setToasts((prev) => [...prev, { id, type, message }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   const handleDownload = async () => {
-    if (!certificateRef.current) return;
+    if (!hiddenCertificateRef.current) return;
 
     try {
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 2, // Higher scale for better quality
+      addToast('info', 'Generating PDF...');
+      
+      // Wait a brief moment to ensure any rendering is complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const canvas = await html2canvas(hiddenCertificateRef.current, {
+        scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        allowTaint: true,
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -30,19 +48,46 @@ function App() {
       
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Police_Verification_${data.applicationNumber}.pdf`);
+      
+      addToast('success', 'PDF Downloaded Successfully!');
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      addToast('error', 'Failed to generate PDF. Please try again.');
     }
   };
 
   const handlePrint = () => {
     window.print();
+    addToast('success', 'Print dialog opened');
+  };
+
+  const handleCopyQR = async () => {
+    try {
+      const qrData = JSON.stringify({
+        appNo: data.applicationNumber,
+        name: data.applicantName,
+        date: data.reportDate,
+        id: "VERIFIED-" + Math.random().toString(36).substr(2, 9).toUpperCase()
+      });
+      await navigator.clipboard.writeText(qrData);
+      addToast('success', 'QR Data copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      addToast('error', 'Failed to copy QR data');
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
       
+      {/* Hidden Certificate for PDF Generation - Full Scale */}
+      <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none overflow-hidden h-0 w-0">
+        <div className="w-[210mm] h-[297mm]">
+          <Certificate ref={hiddenCertificateRef} data={data} />
+        </div>
+      </div>
+
       {/* Navbar */}
       <nav className="bg-gov-navy text-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,6 +148,7 @@ function App() {
               onGenerate={() => {}} // State updates automatically
               onDownload={handleDownload}
               onPrint={handlePrint}
+              onCopy={handleCopyQR}
             />
           </div>
 

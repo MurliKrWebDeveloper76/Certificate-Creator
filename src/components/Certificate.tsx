@@ -36,6 +36,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data 
                     src="https://i.postimg.cc/9MfTRTD5/kar-main-logo.png" 
                     alt="Karnataka State Police" 
                     className="w-full h-full object-contain"
+                    crossOrigin="anonymous"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';

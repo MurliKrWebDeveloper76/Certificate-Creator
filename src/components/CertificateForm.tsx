@@ -9,6 +9,7 @@ interface CertificateFormProps {
   onGenerate: () => void;
   onDownload: () => void;
   onPrint: () => void;
+  onCopy: () => void;
 }
 
 export const CertificateForm: React.FC<CertificateFormProps> = ({ 
@@ -16,7 +17,8 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
   onChange, 
   onGenerate,
   onDownload,
-  onPrint 
+  onPrint,
+  onCopy
 }) => {
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -232,21 +234,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
         </button>
 
         <button 
-          onClick={async () => {
-            try {
-              const qrData = JSON.stringify({
-                appNo: data.applicationNumber,
-                name: data.applicantName,
-                date: data.reportDate,
-                id: "VERIFIED-" + Math.random().toString(36).substr(2, 9).toUpperCase()
-              });
-              await navigator.clipboard.writeText(qrData);
-              alert('QR Data copied to clipboard!');
-            } catch (err) {
-              console.error('Failed to copy:', err);
-              alert('Failed to copy QR data to clipboard');
-            }
-          }}
+          onClick={onCopy}
           className="btn-secondary flex-1"
         >
           <RefreshCw className="w-5 h-5" />
