@@ -16,18 +16,20 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
   // For now, let's use a placeholder that we can replace or a generic emblem.
   // Actually, I'll try to construct the header to look as close as possible.
   
-  const qrData = JSON.stringify({
+  const defaultQrData = JSON.stringify({
     appNo: data.applicationNumber,
     name: data.applicantName,
     date: data.reportDate,
     id: data.verificationId
   });
 
+  const qrValue = data.qrCodeText || defaultQrData;
+
   return (
     <div ref={ref} className={`w-[210mm] min-h-[297mm] bg-white p-8 mx-auto relative text-black font-sans box-border certificate-content ${className || ''}`}>
       {/* Outer Border */}
-      <div className="h-full w-full border-4 border-gray-600 p-1 relative flex flex-col justify-between">
-        <div className="h-full w-full border border-gray-400 p-6 flex flex-col relative">
+      <div className="h-full w-full border-4 border-[#4b5563] p-1 relative flex flex-col justify-between">
+        <div className="h-full w-full border border-[#9ca3af] p-6 flex flex-col relative">
           
           {/* Header */}
           <div className="flex justify-between items-start mb-4">
@@ -47,7 +49,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
                     />
                   ) : (
                     <div className="flex flex-col items-center justify-center">
-                      <Shield className="w-14 h-14 text-gray-800" />
+                      <Shield className="w-14 h-14 text-[#1f2937]" />
                     </div>
                   )}
                </div>
@@ -63,7 +65,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
           </div>
 
           {/* Divider */}
-          <div className="w-full h-px bg-gray-400 mb-4"></div>
+          <div className="w-full h-px bg-[#9ca3af] mb-4"></div>
 
           {/* Title */}
           <div className="text-center mb-6">
@@ -71,27 +73,40 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
           </div>
 
           {/* Content Grid */}
-          <div className="flex flex-col gap-3 text-sm">
+          <div className="flex flex-col gap-3 text-sm relative">
             
+            {/* Passport Photo - Positioned Absolutely */}
+            {data.photoUrl && (
+              <div className="absolute right-0 top-0 w-[35mm] h-[45mm] border border-gray-300 bg-gray-100 overflow-hidden">
+                <img 
+                  src={data.photoUrl} 
+                  alt="Applicant" 
+                  className="w-full h-full object-cover"
+                  crossOrigin="anonymous"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            )}
+
             {/* Row 1 */}
             <div className="flex">
               <div className="w-[5%]">1.</div>
               <div className="w-[35%] font-medium">Application Number</div>
-              <div className="w-[60%]">: {data.applicationNumber}</div>
+              <div className="w-[40%]">: {data.applicationNumber}</div>
             </div>
 
             {/* Row 2 */}
             <div className="flex">
               <div className="w-[5%]">2.</div>
               <div className="w-[35%] font-medium">Applicant Name</div>
-              <div className="w-[60%] uppercase">: {data.applicantName}</div>
+              <div className="w-[40%] uppercase">: {data.applicantName}</div>
             </div>
 
             {/* Row 3 */}
             <div className="flex">
               <div className="w-[5%]">3.</div>
               <div className="w-[35%] font-medium">Father's/ Husband's<br/>Name</div>
-              <div className="w-[60%] uppercase flex items-center">: {data.fatherName}</div>
+              <div className="w-[40%] uppercase flex items-center">: {data.fatherName}</div>
             </div>
 
             {/* Row 4 */}
@@ -169,8 +184,8 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
           <div className="mt-auto pt-10 flex justify-between items-end">
             
             {/* QR Code */}
-            <div className="border border-black p-1">
-              <QRCodeCanvas value={qrData} size={120} />
+            <div className="border-[3px] border-black p-1">
+              <QRCodeCanvas value={qrValue} size={110} />
             </div>
 
             {/* Signature Block */}
@@ -178,7 +193,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data,
               <div className="h-16"></div> {/* Space for signature image if needed */}
               <div className="font-medium mb-4">Signature</div>
               
-              <div className="text-[10px] text-gray-600 mb-2">
+              <div className="text-[10px] text-[#4b5563] mb-2">
                 Digitally signed by {data.verifiedBy.split(',')[0]}<br/>
                 Date: {new Date().toISOString().replace('T', ' ').substring(0, 19)} +05:30
               </div>

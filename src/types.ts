@@ -18,6 +18,8 @@ export interface CertificateData {
   state: string;
   pincode: string;
   verificationId: string;
+  qrCodeText?: string;
+  photoUrl?: string;
 }
 
 export const initialData: CertificateData = {
@@ -37,5 +39,7 @@ export const initialData: CertificateData = {
   city: 'Bengaluru City',
   state: 'Karnataka',
   pincode: '560078',
-  verificationId: 'VERIFIED-X7K9P2M4L'
+  verificationId: 'VERIFIED-X7K9P2M4L',
+  qrCodeText: '',
+  photoUrl: 'https://i.pravatar.cc/300'
 };

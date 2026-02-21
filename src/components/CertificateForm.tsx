@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { FileText, Download, Printer, RefreshCw, Shield, CheckCircle } from 'lucide-react';
+import { FileText, Download, Printer, RefreshCw, Shield, CheckCircle, Image as ImageIcon } from 'lucide-react';
 import { CertificateData } from '../types';
 
 interface CertificateFormProps {
@@ -8,6 +8,7 @@ interface CertificateFormProps {
   onChange: (data: CertificateData) => void;
   onGenerate: () => void;
   onDownload: () => void;
+  onDownloadImage: () => void;
   onPrint: () => void;
   onCopy: () => void;
 }
@@ -17,6 +18,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
   onChange, 
   onGenerate,
   onDownload,
+  onDownloadImage,
   onPrint,
   onCopy
 }) => {
@@ -110,6 +112,30 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
             value={data.permanentAddress}
             onChange={handleChange}
             rows={2}
+            className="input-field"
+          />
+        </div>
+
+        <div className="col-span-1 md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Passport Photo URL</label>
+          <input
+            type="text"
+            name="photoUrl"
+            value={data.photoUrl || ''}
+            onChange={handleChange}
+            placeholder="https://example.com/photo.jpg"
+            className="input-field"
+          />
+        </div>
+
+        <div className="col-span-1 md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Custom QR Code Text (Optional)</label>
+          <textarea
+            name="qrCodeText"
+            value={data.qrCodeText || ''}
+            onChange={handleChange}
+            rows={2}
+            placeholder="Enter custom text for QR code. If empty, default verification data will be used."
             className="input-field"
           />
         </div>
@@ -223,6 +249,14 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
         >
           <Download className="w-5 h-5" />
           Download PDF
+        </button>
+
+        <button 
+          onClick={onDownloadImage}
+          className="btn-secondary flex-1"
+        >
+          <ImageIcon className="w-5 h-5" />
+          Download Image
         </button>
 
         <button 

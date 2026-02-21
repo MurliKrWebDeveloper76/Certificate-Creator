@@ -58,6 +58,35 @@ function App() {
     }
   };
 
+  const handleDownloadImage = async () => {
+    if (!hiddenCertificateRef.current) return;
+
+    try {
+      addToast('info', 'Generating Image...');
+      
+      // Wait a bit for any re-renders
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const canvas = await html2canvas(hiddenCertificateRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        allowTaint: false,
+      });
+
+      const link = document.createElement('a');
+      link.download = `Police_Verification_${data.applicationNumber}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      
+      addToast('success', 'Image Downloaded Successfully!');
+    } catch (error) {
+      console.error('Error generating image:', error);
+      addToast('error', 'Failed to generate image. Please try again.');
+    }
+  };
+
   const handlePrint = async () => {
     if (!hiddenCertificateRef.current) return;
 
@@ -180,6 +209,7 @@ function App() {
               onChange={setData} 
               onGenerate={() => {}} // State updates automatically
               onDownload={handleDownload}
+              onDownloadImage={handleDownloadImage}
               onPrint={handlePrint}
               onCopy={handleCopyQR}
             />
