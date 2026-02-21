@@ -1,0 +1,5 @@
+{
+  "name": "Police Verification Certificate Generator",
+  "description": "Generate official-looking Police Verification Certificates with dynamic data, QR codes, and PDF export.",
+  "requestFramePermissions": []
+}
