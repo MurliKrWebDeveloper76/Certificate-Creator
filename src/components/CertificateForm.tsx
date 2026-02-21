@@ -232,15 +232,20 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
         </button>
 
         <button 
-          onClick={() => {
-            const qrData = JSON.stringify({
-              appNo: data.applicationNumber,
-              name: data.applicantName,
-              date: data.reportDate,
-              id: "VERIFIED-" + Math.random().toString(36).substr(2, 9).toUpperCase()
-            });
-            navigator.clipboard.writeText(qrData);
-            alert('QR Data copied to clipboard!');
+          onClick={async () => {
+            try {
+              const qrData = JSON.stringify({
+                appNo: data.applicationNumber,
+                name: data.applicantName,
+                date: data.reportDate,
+                id: "VERIFIED-" + Math.random().toString(36).substr(2, 9).toUpperCase()
+              });
+              await navigator.clipboard.writeText(qrData);
+              alert('QR Data copied to clipboard!');
+            } catch (err) {
+              console.error('Failed to copy:', err);
+              alert('Failed to copy QR data to clipboard');
+            }
           }}
           className="btn-secondary flex-1"
         >

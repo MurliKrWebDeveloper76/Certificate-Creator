@@ -33,7 +33,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(({ data 
                {/* Logo Placeholder - In a real app, use the actual asset */}
                <div className="w-20 h-20 mb-2 relative flex items-center justify-center">
                   <img 
-                    src="https://upload.wikimedia.org/wikipedia/en/thumb/7/76/Karnataka_State_Police_Logo.svg/1200px-Karnataka_State_Police_Logo.svg.png" 
+                    src="https://i.postimg.cc/9MfTRTD5/kar-main-logo.png" 
                     alt="Karnataka State Police" 
                     className="w-full h-full object-contain"
                     referrerPolicy="no-referrer"
