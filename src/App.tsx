@@ -29,15 +29,16 @@ function App() {
     try {
       addToast('info', 'Generating PDF...');
       
-      // Wait a brief moment to ensure any rendering is complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait a bit for any re-renders
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const canvas = await html2canvas(hiddenCertificateRef.current, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
-        allowTaint: true,
+        // allowTaint must be false to use toDataURL
+        allowTaint: false, 
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -82,10 +83,9 @@ function App() {
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       
       {/* Hidden Certificate for PDF Generation - Full Scale */}
-      <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none overflow-hidden h-0 w-0">
-        <div className="w-[210mm] h-[297mm]">
-          <Certificate ref={hiddenCertificateRef} data={data} />
-        </div>
+      {/* We use fixed positioning off-screen instead of display:none or h-0/w-0 because html2canvas needs the element to be rendered with dimensions */}
+      <div className="fixed left-[-9999px] top-0 w-[210mm] h-[297mm] bg-white">
+        <Certificate ref={hiddenCertificateRef} data={data} />
       </div>
 
       {/* Navbar */}
